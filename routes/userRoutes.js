@@ -12,7 +12,16 @@ router.post('/',(req,res)=>
 {
     //validate before insert
     const user=new User({email:req.body.email,username:req.body.username,password:req.body.password});
-    user.save().then(res.json({"success":true})).catch(err=>{console.log(err.message);});
+    user.save((err)=>{
+        if(err) 
+        {
+            console.log(err.message);
+            res.json({success:false});
+        }
+        else
+        {
+            res.json({success:true});
+        }})
 })
 
 module.exports=router;
