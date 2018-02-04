@@ -9,7 +9,7 @@ mongoose.connect('mongodb://localhost/ideadb',(err)=>{
     else console.log("connected");
 });
 
-var userRoutes=require('./routest/userRoutes')
+var userRoutes=require('./routes/userRoutes')
 
 var app=express();
 
@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(expressValidator());
 
-app.use('/users',userRouters);
+app.use('/users',userRoutes);
 
 
 
