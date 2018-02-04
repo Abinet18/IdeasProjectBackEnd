@@ -30,6 +30,12 @@ app.get('/user',(req,res)=>{
     User.findOne({}).then((data)=>{res.json(data)});
     
 })
+app.post('/user',(req,res)=>
+{
+    //validate before insert
+    const user=new User({email:req.body.email,username:req.body.username,password:req.body.password});
+    user.save().then(res.json({"success":true}));
+})
 
 
 app.listen(8000);
