@@ -9,6 +9,8 @@ mongoose.connect('mongodb://localhost/ideadb',(err)=>{
     else console.log("connected");
 });
 
+var userRoutes=require('./routest/userRoutes')
+
 var app=express();
 
 
@@ -19,23 +21,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(cors());
 app.use(expressValidator());
 
-app.get('/',(req,res)=>{
-    
-    const test=new User({email:"abinet.tafa@gmail.com",username:"abint",password:"pass"});
-    test.save((err)=>{console.log(err);});
-    res.send("Hello");
-})
-app.get('/user',(req,res)=>{
-    
-    User.findOne({}).then((data)=>{res.json(data)});
-    
-})
-app.post('/user',(req,res)=>
-{
-    //validate before insert
-    const user=new User({email:req.body.email,username:req.body.username,password:req.body.password});
-    user.save().then(res.json({"success":true}));
-})
+app.use('/users',userRouters);
+
+
 
 
 app.listen(8000);
