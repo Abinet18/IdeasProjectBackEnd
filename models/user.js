@@ -6,7 +6,8 @@ const crypto = require('crypto'); // A native JS bcrypt library for NodeJS
 const userSchema = new Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
     username: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    admin: { type:Boolean}
   });
   userSchema.methods.comparePassword = function(password) {
     return password==this.password; // Return comparison of login password to password in database (true or false)

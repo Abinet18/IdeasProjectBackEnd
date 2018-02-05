@@ -45,7 +45,7 @@ router.post('/add',(req,res)=>
                   message: 'Success!',
                   token: token,
                   user: {
-                    username: user.username
+                    username: user.username,admin:user.admin?1:0
                   }
                 }); // Return success and token to frontend
               }
