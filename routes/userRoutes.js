@@ -22,9 +22,7 @@ router.post('/add',(req,res)=>
         }})
 })
 
-/* ========
-  LOGIN ROUTE
-  ======== */
+
   router.post('/login', (req, res) => {
    
         User.findOne({ username: req.body.username.toLowerCase() }, (err, user) => {
