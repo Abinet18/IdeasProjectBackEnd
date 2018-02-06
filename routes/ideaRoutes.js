@@ -20,20 +20,35 @@ router.get('/approved',(req,res)=>{
     
    Idea.find({'dateApproved':{$exists:true}}).sort("dateCreated").then((data)=>{res.json(data)});
        
-})
+});
 router.get('/popular',(req,res)=>{
 
     Idea.find({'total':{$gt:0}}).sort({"total/rateCount":-1}).then((data)=>{res.json(data)});
    
-})
+});
 
 router.get('/mostdiscussed',(req,res)=>{
 
     Idea.find({'commentCount':{$gt:0}}).sort({"commentCount":-1}).then((data)=>{res.json(data)});
 });
-router.get('/searchideas/:type/:title',(req,res)=>{
-
-    Idea.find({'type':req.params.type,'title':{$regex:req.params.title}}).sort({"total":-1}).then((data)=>{res.json(data)});
+router.get('/searchideas/:type/:title/:owner',(req,res)=>{
+    let query={};
+    if(req.params.type!='0')
+    {
+        query.type=req.params.type;
+    }
+    if(req.params.title!='0')
+    {
+        query.title={$regex:req.params.title,$options:'i'};
+    }
+    if(req.params.owner!='0')
+    {
+        query.owner={$regex:req.params.owner,$options:'i'};
+    }
+    query.dateApproved={$exists:true};
+    console.log(query);
+    //Idea.find({'type':req.params.type,'title':{$regex:req.params.title,$options:'i'}}).sort({"total":-1}).then((data)=>{res.json(data)});
+    Idea.find(query).sort({"total":-1}).then((data)=>{res.json(data)});
 });
     
 
