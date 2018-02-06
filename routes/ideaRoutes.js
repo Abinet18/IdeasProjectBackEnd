@@ -96,4 +96,31 @@ router.delete('/delete/:ideaId',(req,res)=>
     Idea.findOneAndRemove({'_id':req.params.ideaId}).then((data)=>{res.json(data)});
 })
 
+//Adding a comment to an idea
+router.post('/comment', (req, res) => 
+{
+    
+    var dateCreated=new Date();
+    var theId= req.body.ideaId;
+    var username= req.body.ownerUsername;
+    var comment = req.body.comment;
+        
+    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {thoughts:{owner: username, text: comment, dateofth: new Date()}}}).then((data)=>{res.json(data)});
+
+})
+
+//Deleting a comment from the database
+router.put('/deletecomment',(req,res)=>
+{
+    var theId= req.body.ideaId;
+    var username= req.body.ownerUsername;
+    var theCommentPosition = 'thoughts.'+req.body.thoughtIndexNo;
+
+    //res.send(theCommentPosition);
+    Idea.findByIdAndUpdate({'_id':theId},{$unset : {"thoughts.2": 1 }}).then((data)=>{res.json(data)});
+    //Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : null}}).then((data)=>{res.json(data)});
+
+    //Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : null}}).then((data)=>{res.json(data)});
+})
+
 module.exports=router;
