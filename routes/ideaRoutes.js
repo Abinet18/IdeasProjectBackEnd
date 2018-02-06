@@ -8,9 +8,17 @@ router.get('/',(req,res)=>{
     Idea.find({}).then((data)=>{res.json(data)});
     
 })
+router.get('/getIdea/:ideaId',(req,res)=>{
+    
+    Idea.findOne({"_id":req.params.ideaId}).then((data)=>{
+        console.log(data);
+        res.json(data);
+    });
+    
+});
 router.get('/approved',(req,res)=>{
     
-    Idea.find({'dateApproved':{$exists:true}}).then((data)=>{res.json(data)});
+    Idea.find({'dateApproved':{$exists:true}}).sort("dateCreated").then((data)=>{res.json(data)});
     
 })
 router.get('/popular',(req,res)=>{
@@ -63,7 +71,7 @@ router.use((req, res, next) => {
             if(user.admin)
              {
                  console.log("searching ...")
-                Idea.find({'dateApproved':{$exists:false}}).then((data)=>{
+                Idea.find({'dateApproved':{$exists:false}}).sort({"dateCreated":-1}).then((data)=>{
                     console.log(data);
                     res.json(data)}); 
              }}
@@ -120,6 +128,25 @@ router.post('/comment', (req, res) =>
     var comment = req.body.comment;
         
     Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {thoughts:{owner: username, text: comment, dateofth: new Date()}}}).then((data)=>{res.json(data)});
+
+})
+//Adding a rating to an idea
+
+router.post('/rating/:ideaId', (req, res) => 
+{
+    
+    var theId= req.params.ideaId;
+    var rating= req.body;
+    console.log(theId);
+    console.log(rating);
+           
+    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {ratings:{rater:rating.rater,rating:rating.rating,dateofr:rating.dateofr}}}).
+    then((data,err)=>{
+        console.log(err);
+        if(!err) console.log("rating is added");
+        console.log(data);
+        res.json(data)
+    }).catch((err)=>{console.log(err);})
 
 })
 

@@ -10,7 +10,8 @@ const Thought = new Schema({
 })
 const Rating = new Schema({
   rater:String,
-  rate:{ type:Number,min:0,max:5}
+  rating:{ type:Number,min:0,max:5},
+  dateofr:{type:Date}
 })
 const ideaSchema = new Schema({
     title: { type: String, required: true, unique: true, lowercase: true },
