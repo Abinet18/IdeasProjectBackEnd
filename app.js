@@ -20,7 +20,8 @@ var app=express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cors({origin:'http://localhost:4200'}));
+app.use(cors({origin:'*',
+              optionsSuccessStatus: 200}));
 app.use(expressValidator());
 
 app.use('/users',userRoutes);

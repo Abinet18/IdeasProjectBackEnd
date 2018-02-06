@@ -13,6 +13,19 @@ router.get('/approved',(req,res)=>{
     Idea.find({'dateApproved':{$exists:true}}).then((data)=>{res.json(data)});
     
 })
+router.get('/popular',(req,res)=>{
+    
+    Idea.aggregate([{$unwind:"$ratings"},
+    {$group:{_id:{_id:"$_id",title:"$title",idea:"$idea",owner:"$owner"},
+    total:{$sum:"$ratings.rating"}}},
+    {$project:{_id:"$_id._id",title:"$_id.title",idea:"$_id.idea",total:"$total",owner:"$_id.owner"}},
+    {$sort:{total:-1}},{$limit:10}])
+    .then((data)=>{
+        console.log(data);
+        res.json(data);
+    });
+    
+})
 
 
 
@@ -89,6 +102,7 @@ router.post('/',(req,res)=>
 })
 router.put('/approve/:ideaId',(req,res)=>
 {
+    console.log(req.params.ideaId);
       Idea.findByIdAndUpdate({'_id':req.params.ideaId},{$set:{dateApproved:new Date()}}).then((data)=>{res.json(data)});
 })
 router.delete('/delete/:ideaId',(req,res)=>
