@@ -21,7 +21,10 @@ const ideaSchema = new Schema({
     dateApproved:{ type:Date},
     dateCreated:{ type:Date,required:true },    
     thoughts:{type:[Thought]},
-    ratings:{type:[Rating]}
+    ratings:{type:[Rating]},
+    total:{type:Number},
+    rateCount:{type:Number},
+    commentCount:{type:Number}
   });
 
 

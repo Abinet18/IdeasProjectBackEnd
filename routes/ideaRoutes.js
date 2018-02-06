@@ -10,31 +10,28 @@ router.get('/',(req,res)=>{
 })
 router.get('/getIdea/:ideaId',(req,res)=>{
     
-    Idea.findOne({"_id":req.params.ideaId}).then((data)=>{
+   Idea.findOne({"_id":req.params.ideaId}).then((data)=>{
         console.log(data);
         res.json(data);
-    });
-    
+     });
+        
 });
 router.get('/approved',(req,res)=>{
     
-    Idea.find({'dateApproved':{$exists:true}}).sort("dateCreated").then((data)=>{res.json(data)});
-    
+   Idea.find({'dateApproved':{$exists:true}}).sort("dateCreated").then((data)=>{res.json(data)});
+       
 })
 router.get('/popular',(req,res)=>{
-    
-    Idea.aggregate([{$unwind:"$ratings"},
-    {$group:{_id:{_id:"$_id",title:"$title",idea:"$idea",owner:"$owner"},
-    total:{$sum:"$ratings.rating"}}},
-    {$project:{_id:"$_id._id",title:"$_id.title",idea:"$_id.idea",total:"$total",owner:"$_id.owner"}},
-    {$sort:{total:-1}},{$limit:10}])
-    .then((data)=>{
-        console.log(data);
-        res.json(data);
-    });
-    
+
+    Idea.find({'total':{$gt:0}}).sort({"total/rateCount":-1}).then((data)=>{res.json(data)});
+   
 })
 
+router.get('/mostdiscussed',(req,res)=>{
+
+    Idea.find({'commentCount':{$gt:0}}).sort({"commentCount":-1}).then((data)=>{res.json(data)});
+});
+    
 
 
 //Middleware to check for token available to protect sensitive routes
@@ -62,6 +59,15 @@ router.use((req, res, next) => {
 
   //sensitive routes
 
+  router.get('/yourideas/:owner',(req,res)=>{
+    
+    Idea.find({"owner":req.params.owner}).then((data)=>{
+         console.log(data);
+         res.json(data);
+      });
+         
+ });
+
   router.get('/needapproval',(req,res)=>{
     console.log(req.decoded.userId);
    User.findOne({'_id':req.decoded.userId}).then(
@@ -84,10 +90,7 @@ router.use((req, res, next) => {
 router.post('/',(req,res)=>
 {
     //validate before insert
-    // var url = require('url');
-    // var url_parts = url.parse(req.url, true);
-    // var query = url_parts.query;
-
+   
     var title1= req.body.title;
     var type1 = req.body.type;
     var idea1 = req.body.idea;
@@ -127,9 +130,7 @@ router.post('/comment', (req, res) =>
     var username= req.body.ownerUsername;
     var comment = req.body.comment;
         
-    //var count = Idea.find({$and : [{_id: theId}, {'thoughts.text': comment}, {'thoughts.owner': username}]}).count().then((data)=>{console.log('The count is '+data)});
-
-    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {thoughts:{owner: username, text: comment, dateofth: new Date()}}}).then((data)=>{res.json(data)});
+    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {thoughts:{owner: username, text: comment, dateofth: new Date()}},$inc:{commentCount:1}}).then((data)=>{res.json(data)});
 
 })
 //Adding a rating to an idea
@@ -142,7 +143,7 @@ router.post('/rating/:ideaId', (req, res) =>
     console.log(theId);
     console.log(rating);
            
-    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {ratings:{rater:rating.rater,rating:rating.rating,dateofr:rating.dateofr}}}).
+    Idea.findByIdAndUpdate({"_id" : theId}, { $addToSet: {ratings:{rater:rating.rater,rating:rating.rating,dateofr:rating.dateofr}},$inc:{total:rating.rating,rateCount:1}}).
     then((data,err)=>{
         console.log(err);
         if(!err) console.log("rating is added");
