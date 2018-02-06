@@ -31,6 +31,10 @@ router.get('/mostdiscussed',(req,res)=>{
 
     Idea.find({'commentCount':{$gt:0}}).sort({"commentCount":-1}).then((data)=>{res.json(data)});
 });
+router.get('/searchideas/:type/:title',(req,res)=>{
+
+    Idea.find({'type':req.params.type,'title':{$regex:req.params.title}}).sort({"total":-1}).then((data)=>{res.json(data)});
+});
     
 
 
