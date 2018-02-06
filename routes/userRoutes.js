@@ -22,6 +22,20 @@ router.post('/add',(req,res)=>
         }})
 })
 
+  //Get all user profiles
+
+  router.get('/getusers', (req, res) => {
+    // Search for users in database
+    User.find({}).then((data)=>{res.json(data)});
+  });
+
+  //Make a user an administrator
+  router.put('/makeadmin/:theuser', (req,res)=>
+{
+    console.log(req.params.theuser);
+      User.update({'username':req.params.theuser},{$set:{admin: true}}).then((data)=>{res.json(data)});
+})
+
 
   router.post('/login', (req, res) => {
    
@@ -97,5 +111,6 @@ router.post('/add',(req,res)=>
       }
     });
   });
+
 
 module.exports=router;
