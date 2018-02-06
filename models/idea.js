@@ -14,8 +14,8 @@ const Rating = new Schema({
   dateofr:{type:Date}
 })
 const ideaSchema = new Schema({
-    title: { type: String, required: true, unique: true },
-    type: { type: String, required: true },
+    title: { type: String, required: true, unique: true, lowercase: false },
+    type: { type: String, required: true, lowercase: false },
     idea: { type: String, required: true },
     owner: {type:String,required:true},
     dateApproved:{ type:Date},

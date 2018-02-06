@@ -161,14 +161,20 @@ router.post('/rating/:ideaId', (req, res) =>
 router.put('/deletecomment',(req,res)=>
 {
     var theId= req.body.ideaId;
-    var username= req.body.ownerUsername;
-    var theCommentPosition = 'thoughts.'+req.body.thoughtIndexNo;
+    var username= req.body.owner;
+    var thethought= req.body.thoughtText;
+    var thecommentDate= req.body.commentDate;
 
-    //res.send(theCommentPosition);
-    Idea.findByIdAndUpdate({'_id':theId},{$unset : {"thoughts.2": 1 }}).then((data)=>{res.json(data)});
-    //Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : null}}).then((data)=>{res.json(data)});
+    var theThoughtObject = {owner: username, text: thethought, dateofth: thecommentDate};
 
-    //Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : null}}).then((data)=>{res.json(data)});
+    console.log(theThoughtObject);
+
+    Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : theThoughtObject}}).then((data)=>{res.json(data)});
+})
+
+router.get('/image', (req, res)=>
+{
+    res.sendFile('img/life.jpg'); 
 })
 
 module.exports=router;
