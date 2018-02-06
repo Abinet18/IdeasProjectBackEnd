@@ -14,14 +14,17 @@ const Rating = new Schema({
   dateofr:{type:Date}
 })
 const ideaSchema = new Schema({
-    title: { type: String, required: true, unique: true, lowercase: true },
-    type: { type: String, required: true, lowercase: false },
+    title: { type: String, required: true, unique: true },
+    type: { type: String, required: true },
     idea: { type: String, required: true },
     owner: {type:String,required:true},
     dateApproved:{ type:Date},
     dateCreated:{ type:Date,required:true },    
     thoughts:{type:[Thought]},
-    ratings:{type:[Rating]}
+    ratings:{type:[Rating]},
+    total:{type:Number},
+    rateCount:{type:Number},
+    commentCount:{type:Number}
   });
 
 
