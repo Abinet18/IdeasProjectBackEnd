@@ -5,7 +5,7 @@ const User = require('../models/user');
 
 router.get('/',(req,res)=>{
     
-    Idea.find({}).then((data)=>{res.json(data)});
+  res.send("hello");
     
 })
 router.get('/getIdea/:ideaId',(req,res)=>{
