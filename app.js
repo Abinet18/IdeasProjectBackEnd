@@ -7,6 +7,8 @@ const User=require('./models/user');
 const Idea=require('./models/idea');
 const jwt = require('jsonwebtoken'); 
 
+var port = process.env.PORT || 8080;
+
 mongoose.connect('mongodb://dbadmin:dbpass@ds125068.mlab.com:25068/ideadb',(err)=>{
     if(err) console.log("Could not connect to database");
     else console.log("connected to the db");
@@ -34,4 +36,6 @@ app.use('/users',userRoutes);
 app.use('/idea',ideaRoutes);
 
 
-app.listen(8000);
+app.listen(port, function() {
+    console.log('Our app is running on http://localhost:' + port);
+});
