@@ -24,6 +24,11 @@ app.use(cors({origin:'*',
               optionsSuccessStatus: 200}));
 app.use(expressValidator());
 
+app.get('/',(req,res)=>
+{
+    res.send("hello");
+});
+
 app.use('/users',userRoutes);
 
 app.use('/idea',ideaRoutes);
