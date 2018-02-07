@@ -30,11 +30,10 @@ app.get('/',(req,res)=>
 {
     res.send("hello");
 });
-
+//Routes for signup and login
 app.use('/users',userRoutes);
-
+//Routes for retrieving and working with ideas
 app.use('/idea',ideaRoutes);
-
 
 app.listen(port, function() {
     console.log('Our app is running on http://localhost:' + port);
