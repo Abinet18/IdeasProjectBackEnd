@@ -3,11 +3,8 @@ const jwt = require('jsonwebtoken'); // Compact, URL-safe means of representing 
 const router=require('express').Router();
 const User = require('../models/user'); 
 
-router.get('/',(req,res)=>{
-    
-  res.send("hello");
-    
-})
+//@Abinet
+//get Idea by Id
 router.get('/getIdea/:ideaId',(req,res)=>{
     
    Idea.findOne({"_id":req.params.ideaId}).then((data)=>{
@@ -16,22 +13,27 @@ router.get('/getIdea/:ideaId',(req,res)=>{
      });
         
 });
+//get Approved Ideas
 router.get('/approved',(req,res)=>{
     
    Idea.find({'dateApproved':{$exists:true}}).sort("dateCreated").then((data)=>{res.json(data)});
        
 });
+//get highly rated ideas
 router.get('/popular',(req,res)=>{
 
     Idea.find({'total':{$gt:0}}).sort({"total/rateCount":-1}).then((data)=>{res.json(data)});
    
 });
-
+//get most discussed(commented) ideas
 router.get('/mostdiscussed',(req,res)=>{
 
     Idea.find({'commentCount':{$gt:0}}).sort({"commentCount":-1}).then((data)=>{res.json(data)});
 });
+//search for ideas
 router.get('/searchideas/:type/:title/:owner',(req,res)=>{
+    
+    //construct the query, ignore a condition if the passed parameter is 0
     let query={};
     if(req.params.type!='0')
     {
@@ -77,7 +79,7 @@ router.use((req, res, next) => {
   });
 
   //sensitive routes
-
+  //get ideas owned by logged in user
   router.get('/yourideas/:owner',(req,res)=>{
     
     Idea.find({"owner":req.params.owner}).then((data)=>{
@@ -86,7 +88,7 @@ router.use((req, res, next) => {
       });
          
  });
-
+ //get ideas that are not yet approved
   router.get('/needapproval',(req,res)=>{
     console.log(req.decoded.userId);
    User.findOne({'_id':req.decoded.userId}).then(
@@ -105,10 +107,9 @@ router.use((req, res, next) => {
     
        
 })
-
+//post a new idea
 router.post('/',(req,res)=>
 {
-    //validate before insert
    
     var title1= req.body.title;
     var type1 = req.body.type;
@@ -130,16 +131,18 @@ router.post('/',(req,res)=>
         
         //console.log(title1);
 })
+//approve idea by setting approval date given its id
 router.put('/approve/:ideaId',(req,res)=>
 {
     console.log(req.params.ideaId);
       Idea.findByIdAndUpdate({'_id':req.params.ideaId},{$set:{dateApproved:new Date()}}).then((data)=>{res.json(data)});
 })
+//delete an idea
 router.delete('/delete/:ideaId',(req,res)=>
 {
     Idea.findOneAndRemove({'_id':req.params.ideaId}).then((data)=>{res.json(data)});
 })
-
+//@Brian
 //Adding a comment to an idea
 router.post('/comment', (req, res) => 
 {
@@ -172,7 +175,8 @@ router.post('/rating/:ideaId', (req, res) =>
 
 })
 
-//Deleting a comment from the database
+//@Brian
+//Deleting a comment from the an idea
 router.put('/deletecomment',(req,res)=>
 {
     var theId= req.body.ideaId;
@@ -186,7 +190,8 @@ router.put('/deletecomment',(req,res)=>
 
     Idea.findByIdAndUpdate({'_id':theId}, {$pull : {"thoughts" : theThoughtObject}}).then((data)=>{res.json(data)});
 })
-
+//@Brian
+//retrieve an image
 router.get('/image', (req, res)=>
 {
     res.sendFile('img/life.jpg'); 
